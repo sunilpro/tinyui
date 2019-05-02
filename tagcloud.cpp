@@ -52,8 +52,7 @@ enum Quadrant {
     BottomRight
 };
 
-bool findFreeRectangle(Quadrant quadrant, float containerWidth, float containerHieght,
-                       const std::vector<Item*> &children, float width, float height, float &posx, float &posy) {
+bool findFreeRectangle(Quadrant quadrant, Item *container, float width, float height, float &posx, float &posy) {
     int xDirection, yDirection;
     switch (quadrant) {
     case TopLeft: xDirection = -1; yDirection = -1; break;
@@ -61,6 +60,9 @@ bool findFreeRectangle(Quadrant quadrant, float containerWidth, float containerH
     case BottomLeft: xDirection = -1; yDirection = 1; break;
     case BottomRight: xDirection = 1; yDirection = 1; break;
     }
+    float containerWidth = container->width();
+    float containerHieght = container->hieght();
+    const std::vector<Item*> &children = container->children();
     for (float y=containerHieght/2 - (yDirection < 0 ? height : 0); y > 0 && y < containerHieght-height; y+=yDirection) {
         for (float x=containerWidth/2 - (xDirection < 0 ? width : 0); x > 0 && x < containerWidth-width; x+=xDirection) {
             bool collided = false;
@@ -87,14 +89,18 @@ bool findFreeRectangle(Quadrant quadrant, float containerWidth, float containerH
     return false;
 }
 
-static std::string sentence = "Another possibility would be to merge a word’s tree with a single large tree once it is placed I think this operation would be fairly expensive though compared with the analagous sprite mask operation, which is essentially ORing a whole block as word placement can be quite slow for more than a few hundred words the layout algorithm can be run asynchronously, with a configurable time step size. This makes it possible to animate words as they are placed without stuttering. It is recommended to always use a time step even without animations as it prevents the browser’s event loop from blocking while placing the words";
+const static std::string sentence = "Another possibility would be to merge a word’s tree with a single large tree once it is placed I think this operation would be fairly expensive though compared with the analagous sprite mask operation, which is essentially ORing a whole block as word placement can be quite slow for more than a few hundred words the layout algorithm can be run asynchronously with a configurable time step size This makes it possible to animate words as they are placed without stuttering It is recommended to always use a time step even without animations as it prevents the browser’s event loop from blocking while placing the words";
 void setupTagcloud(Screen *screen) {
     std::srand(time(nullptr));
-    using namespace std;
-    istringstream iss(sentence);
-    vector<string> tokens{istream_iterator<string>{iss}, istream_iterator<string>{}};
+
+    std::istringstream iss(sentence);
+    std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+
     remove_duplicates(tokens);
-    auto root = screen->add<Rectangle>(200, 100, 800, 600);
+
+    std::random_shuffle(std::begin(tokens), std::end(tokens));
+
+    auto root = new Item(nullptr, 0, 0, 800, 600);
     //root->add<Rectangle>( 200, 200, 50, 50)->color = nvgRGB(255, 0, 0);
     double started = glfwGetTime();
     for (size_t i=0; i < tokens.size(); ++i) {
@@ -107,15 +113,31 @@ void setupTagcloud(Screen *screen) {
         txt->performLayout();
         float x,y;
         //double start = glfwGetTime();
-        if(findFreeRectangle((Quadrant)(i%4), root->width(), root->hieght(), root->children(), txt->width(), txt->hieght(), x, y)) {
+        if(findFreeRectangle((Quadrant)(i%4), root, txt->width(), txt->hieght(), x, y)) {
             //printf("[%lf]-> Free Rectangle (%f,%f,%f,%f)\n", glfwGetTime() - start, x, y, txt->width(), txt->hieght());
             txt->x = x;
             txt->y = y;
             root->addChild(txt);
         } else {
-            printf("-> No Free Rectangle (%f,%f) %s %d\n", txt->width(), txt->hieght(), tokens[i].c_str(), txt->fontSize);
+            printf("-> No Free Rectangle (%f, %f) %s %d\n", txt->width(), txt->hieght(), tokens[i].c_str(), txt->fontSize);
         }
     }
+
+    auto _root = screen->add<Item>(200, 100, 800, 600);
+    for (auto child: root->children()) {
+        auto _x = child->x();
+        auto _y = child->y();
+        auto x = randInRange(0, 800);
+        auto y = randInRange(0, 600);
+        Item::addAnimation(1.0, [=](double progress) {
+            child->x = _x * progress + x*(1-progress);
+            child->y = _y * progress + y*(1-progress);
+        });
+        _root->addChild(child);
+    }
+
+    while(root->childCount() > 0)
+        root->removeChild(root->childAt(0));
 
     printf("Took %lf seconds for placing %d words\n", glfwGetTime() - started, root->childCount());
 

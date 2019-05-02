@@ -43,7 +43,7 @@ void Item::performAnimations() {
     }
 
     for (const Animation& animation : finished) {
-        printf("Removing Animation after %lf seconds\n", animation.duration);
+        //printf("Removing Animation after %lf seconds\n", animation.duration);
         animations.erase(std::remove(animations.begin(), animations.end(), animation), animations.end());
     }
 }
