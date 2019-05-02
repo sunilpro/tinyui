@@ -2,12 +2,14 @@
 #define SCREEN_H
 
 #include "item.h"
+#include "color.h"
 
 struct GLFWwindow;
 struct GLFWcursor;
 
 class Screen: public Item
 {
+    void setBackground(Color color);
 public:
     Screen(float w, float h);
 
@@ -48,6 +50,7 @@ protected:
     bool resizeCallbackEvent(int, int);
 
 private:
+    Color mColor;
     std::vector<Item *> mFocusPath;
     bool mDragActive;
     Item *mDragWidget = nullptr;

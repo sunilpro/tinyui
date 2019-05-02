@@ -3,7 +3,50 @@
 #include "anchors.h"
 #include "screen.h"
 
+#include "GLFW/glfw3.h"
+
 extern Screen *gScreen;
+
+double easeInQuint( double pos) {
+    return pow(pos, 5);
+}
+
+double easeOutQuint( double pos) {
+    return (pow((pos-1), 5) +1);
+}
+
+double easeInOutQuint( double pos) {
+    if ((pos/=0.5) < 1) return 0.5*pow(pos,5);
+    return 0.5 * (pow((pos-2),5) + 2);
+}
+
+std::vector<Animation> Item::animations;
+
+bool operator==(const Animation& lhs, const Animation& rhs) {
+    return lhs.duration == rhs.duration && lhs.cb && rhs.cb && lhs.startTime && rhs.startTime;
+}
+
+void Item::addAnimation(double duration, std::function<void(double)> cb) {
+    animations.push_back({duration, glfwGetTime(), cb});
+}
+
+void Item::performAnimations() {
+    std::vector<Animation> finished;
+    for (auto animation : animations) {
+        //printf("Performing Animation at %lf seconds\n", glfwGetTime());
+        auto dt = glfwGetTime()-animation.startTime;
+        auto progress = dt/animation.duration;
+        if(progress <= 1.0)
+            animation.cb(easeOutQuint(progress));
+        else
+            finished.push_back(animation);
+    }
+
+    for (const Animation& animation : finished) {
+        printf("Removing Animation after %lf seconds\n", animation.duration);
+        animations.erase(std::remove(animations.begin(), animations.end(), animation), animations.end());
+    }
+}
 
 Item::Item(Item *parent, float x, float y, float width, float hieght)
     : parent(nullptr), visible(true), x(x), y(y),
@@ -56,6 +99,14 @@ Item *Item::findItem(float x, float y) {
             return child->findItem(x - this->x(), y - this->y());
     }
     return contains(x, y) ? this : nullptr;
+}
+
+Item *Item::findChild(float x, float y) {
+    for (auto child: mChildren) {
+        if (child->visible() && child->contains(x - this->x(), y - this->y()))
+            return child;
+    }
+    return nullptr;
 }
 
 void Item::requestFocus() {

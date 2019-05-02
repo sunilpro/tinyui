@@ -12,37 +12,6 @@
 #include "listview.h"
 #include "text.h"
 
-int randInRange(int min, int max)
-{
-  return min + (int) (rand() / (double) (RAND_MAX + 1) * (max - min + 1));
-}
-
-class MyAdaptor: public ListAdaptor {
-public:
-    virtual int count() {
-        return 100;
-    }
-
-    virtual float hieghtForitemAt(int) {
-        return 60;
-    }
-
-    virtual ListItem *itemAt(int position) {
-        auto listItem = new ListItem(position, 0, 0, 200, 60);
-        auto rect = listItem->add<Rectangle>(0, 0, 200, 60);
-        listItem->add<Text>(0, 0, 200, 60)->text = std::string("Item ") + std::to_string(position);
-        if (position % 2 == 0)
-            rect->color = nvgRGB(255-position%3, position*2, 255-position%4);
-        else
-            rect->color = nvgRGB(position%3, position*2, position%4);
-        return listItem;
-    }
-
-    virtual ~MyAdaptor() {
-
-    }
-};
-
 #include <emscripten.h>
 #include <emscripten/html5.h>
 
@@ -54,7 +23,7 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
 {
     int i;
 
-    if (vg == NULL)
+    if (vg == nullptr)
         return -1;
 
     data->fontIcons = nvgCreateFont(vg, "icons", "entypo.ttf");
@@ -104,6 +73,7 @@ void render() {
     prevt = t;
     updateGraph(&fps, dt);
 
+    Item::performAnimations();
     gScreen->drawAll();
     renderGraph(gScreen->vg(), 5,5, &fps);
 
@@ -119,6 +89,15 @@ EM_BOOL _sapp_emsc_size_changed(int event_type, const EmscriptenUiEvent* ui_even
     glfwSetWindowSize(gScreen->window(), w, h);
     printf("_sapp_emsc_size_changed %f, %f, %f\n", w, h, dpi_scale);
     return 1;
+}
+
+extern void setupUI(Screen *);
+extern void setupTagcloud(Screen *);
+
+int randInRange(int min, int max)
+{
+    int range = max - min + 1;
+    return rand() % range + min;
 }
 
 int main()
@@ -140,50 +119,14 @@ int main()
     if (loadDemoData(screen->vg(), &data) == -1)
         return -1;
 
-    Item *root = screen;
-    static Flickable *flickable = nullptr;
-    {
-        Column *content;
-        {
-            flickable = root->add<Flickable>(100, 100, 280, 200);
-            flickable->anchors = new Anchors(flickable);
-            //content->anchors()->fill.connect_from(redRect);
-        }
-        {
-            content = flickable->add<Column>(0, 0);
-            content->spacing = 5;
-            content->padding = 5;
-            content->anchors = new Anchors(content);
-            //rect1->anchors()->bind(rect1->anchors()->bottom, redRect, redRect->anchors()->bottom);
-            //rect1->anchors()->bind(rect1->anchors()->horizontalCenter, redRect, redRect->anchors()->horizontalCenter);
-
-            content->add<Rectangle>(0, 0, 100, 100)->color = nvgRGBA(255, 0, 0, 255);
-            content->add<Rectangle>(0, 0, 200, 100)->color = nvgRGBA(255, 255, 0, 255);
-            content->add<Rectangle>(0, 0, 100, 200)->color = nvgRGBA(255, 0, 155, 255);
-            content->add<Rectangle>(0, 0, 100, 10)->color = nvgRGBA(0, 0, 255, 255);
-            content->add<Rectangle>(0, 0, 10, 100)->color = nvgRGBA(0, 255, 0, 255);
-        }
-        {
-            auto rect1 = root->add<Rectangle>(100, 600, 200, 100);
-            rect1->radius = 10;
-            rect1->color = nvgRGBA(255, 0, 255, 255);
-            rect1->anchors = new Anchors(rect1);
-            rect1->anchors()->bind(rect1->anchors()->left, flickable, flickable->anchors()->left);
-            //rect1->anchors()->bind(rect1->anchors()->right, redRect, redRect->anchors()->right);
-            //rect1->anchors()->bind(rect1->anchors()->horizontalCenter, redRect, redRect->anchors()->horizontalCenter);
-        }
-        {
-            auto listView = root->add<ListView>(400, 100, 300, 400);
-            listView->setAdaptor(new MyAdaptor());
-        }
-    }
-
     glfwSwapInterval(0);
 
     glfwSetTime(0);
     prevt = glfwGetTime();
 
     initGraph(&fps, GRAPH_RENDER_FPS, "Frame Time");
+
+    setupTagcloud(screen);
 
     emscripten_set_main_loop(render, 0, 1);
 

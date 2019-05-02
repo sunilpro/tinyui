@@ -49,7 +49,7 @@
 #include <cmath>
 
 Screen *gScreen = nullptr;
-Screen::Screen(float w, float h): Item(nullptr, 0, 0, w, h)
+Screen::Screen(float w, float h): Item(nullptr, 0, 0, w, h), mColor(Color::white())
 {
     gScreen = this;
     memset(mCursors, 0, sizeof(GLFWcursor *) * (int) Cursor::CursorCount);
@@ -92,7 +92,7 @@ Screen::Screen(float w, float h): Item(nullptr, 0, 0, w, h)
 
     glfwGetFramebufferSize(mGLFWWindow, &mFBSize[0], &mFBSize[1]);
     glViewport(0, 0, mFBSize[0], mFBSize[1]);
-    glClearColor(0.3f, 0.3f, 0.32f, 1.f);
+    glClearColor(mColor.r/255, mColor.g/255, mColor.b/255, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glfwSwapInterval(0);
     glfwSwapBuffers(mGLFWWindow);
@@ -185,7 +185,7 @@ void Screen::initialize(GLFWwindow *window) {
 }
 
 void Screen::drawAll() {
-    glClearColor(0.3f, 0.3f, 0.32f, 1.f);
+    glClearColor(mColor.r/255, mColor.g/255, mColor.b/255, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     drawContents();

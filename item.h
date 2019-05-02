@@ -4,6 +4,7 @@
 #include "anchors.h"
 #include "object.h"
 #include <vector>
+#include <math.h>
 
 struct NVGcontext;
 
@@ -18,7 +19,22 @@ enum class Cursor {
     CursorCount ///< Not a cursor --- should always be last: enables a loop over the cursor types.
 };
 
+
+typedef void (* AnimationProgressCallback)(double);
+
+struct Animation {
+    double duration;
+    double startTime;
+    std::function<void(double)> cb;
+
+};
+
 class Item: public Object {
+public:
+    static void addAnimation(double duration, std::function<void(double)> cb);
+    static void performAnimations();
+private:
+    static std::vector<Animation> animations;
 
 public:
     PROPERTY(Item*, parent);
@@ -86,6 +102,9 @@ public:
 
     /// Determine the widget located at the given position value (recursive)
     Item *findItem(float x, float y);
+
+    /// Determine the immediate child Item located at the given position value (recursive)
+    Item *findChild(float x, float y);
 
     virtual void performLayout();
     virtual void draw(NVGcontext *ctx);
