@@ -65,4 +65,8 @@ private:
     int mSize[2];
 };
 
+typedef void (*ScreenReadyCallback)(Screen*);
+
+int app_exec(ScreenReadyCallback screenReadyCallback);
+
 #endif // SCREEN_H

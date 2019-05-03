@@ -91,16 +91,13 @@ EM_BOOL _sapp_emsc_size_changed(int event_type, const EmscriptenUiEvent* ui_even
     return 1;
 }
 
-extern void setupUI(Screen *);
-extern void setupTagcloud(Screen *);
-
 int randInRange(int min, int max)
 {
     int range = max - min + 1;
     return rand() % range + min;
 }
 
-int main()
+int app_exec(ScreenReadyCallback screenReadyCallback)
 {
     emscripten_get_element_css_size("canvas", &w, &h);
     emscripten_set_resize_callback(0, 0, 0, _sapp_emsc_size_changed);
@@ -116,8 +113,10 @@ int main()
     DemoData data;
     Screen *screen = new Screen(w, h);
 
-    if (loadDemoData(screen->vg(), &data) == -1)
+    if (loadDemoData(screen->vg(), &data) == -1) {
+        abort();
         return -1;
+    }
 
     glfwSwapInterval(0);
 
@@ -126,13 +125,15 @@ int main()
 
     initGraph(&fps, GRAPH_RENDER_FPS, "Frame Time");
 
-    setupTagcloud(screen);
+    screenReadyCallback(screen);
 
     emscripten_set_main_loop(render, 0, 1);
 
     freeDemoData(screen->vg(), &data);
 
     glfwTerminate();
+
+    return 0;
 }
 
 /*

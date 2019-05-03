@@ -143,3 +143,7 @@ void setupTagcloud(Screen *screen) {
 
     fflush(stdout);
 }
+
+int main() {
+    return app_exec(setupTagcloud);
+}

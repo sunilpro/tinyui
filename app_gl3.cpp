@@ -5,16 +5,13 @@
 #define GLFW_INCLUDE_GLEXT
 #include <GLFW/glfw3.h>
 
-extern void setupUI(Screen *);
-extern void setupTagcloud(Screen *);
-
 int randInRange(int min, int max)
 {
     int range = max - min + 1;
     return rand() % range + min;
 }
 
-int main()
+int app_exec(ScreenReadyCallback screenReadyCallback)
 {
     DemoData data;
     Screen *screen = new Screen(1000, 800);
@@ -22,7 +19,7 @@ int main()
     if (loadDemoData(screen->vg(), &data) == -1)
         return -1;
 
-    setupTagcloud(screen);
+    screenReadyCallback(screen);
 
     while (!glfwWindowShouldClose(screen->window()))
     {
@@ -39,6 +36,7 @@ int main()
     freeDemoData(screen->vg(), &data);
 
     glfwTerminate();
+    return 0;
 }
 
 
