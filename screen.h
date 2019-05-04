@@ -11,7 +11,7 @@ class Screen: public Item
 {
     void setBackground(Color color);
 public:
-    Screen(float w, float h);
+    Screen(float w, float h, float dpr);
 
     void updateFocus(Item *widget);
 

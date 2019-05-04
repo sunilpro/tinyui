@@ -14,7 +14,7 @@ int randInRange(int min, int max)
 int app_exec(ScreenReadyCallback screenReadyCallback)
 {
     DemoData data;
-    Screen *screen = new Screen(1000, 800);
+    Screen *screen = new Screen(1000, 800, 1.0);
 
     if (loadDemoData(screen->vg(), &data) == -1)
         return -1;

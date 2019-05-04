@@ -28,7 +28,7 @@ SOURCES += \
     anchors.cpp \
     row.cpp \
     screen.cpp \
-    tagcloud.cpp \
+    examples/tagcloud.cpp \
     text.cpp
 
 macx {

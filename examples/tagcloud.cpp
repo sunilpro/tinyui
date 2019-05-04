@@ -91,8 +91,6 @@ bool findFreeRectangle(Quadrant quadrant, Item *container, float width, float he
 
 const static std::string sentence = "Another possibility would be to merge a word’s tree with a single large tree once it is placed I think this operation would be fairly expensive though compared with the analagous sprite mask operation, which is essentially ORing a whole block as word placement can be quite slow for more than a few hundred words the layout algorithm can be run asynchronously with a configurable time step size This makes it possible to animate words as they are placed without stuttering It is recommended to always use a time step even without animations as it prevents the browser’s event loop from blocking while placing the words";
 void setupTagcloud(Screen *screen) {
-    std::srand(time(nullptr));
-
     std::istringstream iss(sentence);
     std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
 
@@ -100,7 +98,7 @@ void setupTagcloud(Screen *screen) {
 
     std::random_shuffle(std::begin(tokens), std::end(tokens));
 
-    auto root = new Item(nullptr, 0, 0, 800, 600);
+    auto root = new Item(nullptr, 0,0, 800,600);
     //root->add<Rectangle>( 200, 200, 50, 50)->color = nvgRGB(255, 0, 0);
     double started = glfwGetTime();
     for (size_t i=0; i < tokens.size(); ++i) {
@@ -123,7 +121,7 @@ void setupTagcloud(Screen *screen) {
         }
     }
 
-    auto _root = screen->add<Item>(200, 100, 800, 600);
+    auto _root = screen->add<Item>(screen->width()/2-400, screen->hieght()/2-300, 800, 600);
     for (auto child: root->children()) {
         auto _x = child->x();
         auto _y = child->y();
@@ -139,11 +137,12 @@ void setupTagcloud(Screen *screen) {
     while(root->childCount() > 0)
         root->removeChild(root->childAt(0));
 
-    printf("Took %lf seconds for placing %d words\n", glfwGetTime() - started, root->childCount());
+    printf("Took %lf seconds for placing %d words\n", glfwGetTime() - started, _root->childCount());
 
     fflush(stdout);
 }
 
 int main() {
+    std::srand(time(nullptr));
     return app_exec(setupTagcloud);
 }

@@ -49,7 +49,7 @@
 #include <cmath>
 
 Screen *gScreen = nullptr;
-Screen::Screen(float w, float h): Item(nullptr, 0, 0, w, h), mColor(Color::white())
+Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w/dpr, h/dpr), mPixelRatio(dpr), mColor(Color::white())
 {
     gScreen = this;
     memset(mCursors, 0, sizeof(GLFWcursor *) * (int) Cursor::CursorCount);
@@ -155,12 +155,6 @@ void Screen::initialize(GLFWwindow *window) {
     mGLFWWindow = window;
     glfwGetWindowSize(mGLFWWindow, &mSize[0], &mSize[1]);
     glfwGetFramebufferSize(mGLFWWindow, &mFBSize[0], &mFBSize[1]);
-
-#ifdef EMSCRIPTEN
-    mPixelRatio = emscripten_get_device_pixel_ratio(); //get_pixel_ratio(window);
-#else
-    mPixelRatio = 1.0;
-#endif
 
     /* Detect framebuffer properties and set up compatible NanoVG context */
     //GLint nStencilBits = 0, nSamples = 0;

@@ -111,7 +111,7 @@ int app_exec(ScreenReadyCallback screenReadyCallback)
     printf("main %f, %f, %f\n", w, h, dpi_scale);
 
     DemoData data;
-    Screen *screen = new Screen(w, h);
+    Screen *screen = new Screen(w, h, dpi_scale);
 
     if (loadDemoData(screen->vg(), &data) == -1) {
         abort();
