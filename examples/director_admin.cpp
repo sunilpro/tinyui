@@ -8,27 +8,27 @@ extern int randInRange(int min, int max);
 
 static void setupUI(Screen *screen) {
     screen->setBackground(0xF1F2F7FF);
-    auto titleBar = screen->add<Rectangle>(0, 0, screen->width(), 40);
+    auto titleBar = screen->add<Rectangle>(0, 0, screen->width(), 50);
     titleBar->anchors = new Anchors(titleBar);
     {
-        auto row = titleBar->add<Row>(0, 0, 0, 40);
-        row->add<Rectangle>(0, 0, 150, 40)
+        auto row = titleBar->add<Row>(0, 0, 0, 50);
+        row->add<Rectangle>(0, 0, 150, 50)
                 ->set_color(0x283744FF)
-                ->add<Text>(0, 0, 150, 40)
+                ->add<Text>(0, 0, 150, 50)
                 ->set_alignment(NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE)
                 ->set_fontSize(24)
                 ->set_color(Color::white)
                 ->set_text("Admin");
-        row->addChild(Text::createIcon(40, 40, "\uf0c9", 0x333333FF, 24));
+        row->addChild(Text::createIcon(40, 50, "\uf0c9", 0x333333FF, 24));
     }
     {
-        auto row = titleBar->add<Row>(0, 0, 0, 40);
+        auto row = titleBar->add<Row>(0, 0, 0, 50);
         row->anchors = new Anchors(row);
         row->anchors()->bind(row->anchors()->right, titleBar, titleBar->anchors()->right);
 
-        row->addChild(Text::createIcon(40, 40, "\uf0e0", 0x333333FF, 20));
-        row->addChild(Text::createIcon(40, 40, "\uf0ae", 0x333333FF, 20));
-        row->add<Text>(0, 0, 128, 40)
+        row->addChild(Text::createIcon(40, 50, "\uf0e0", 0x333333FF, 14));
+        row->addChild(Text::createIcon(40, 50, "\uf0ae", 0x333333FF, 14));
+        row->add<Text>(0, 0, 128, 50)
                 ->set_alignment(NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE)
                 ->set_fontName("fas")
                 ->set_fontSize(14)
