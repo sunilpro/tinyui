@@ -1,7 +1,7 @@
 #include "column.h"
 
-Column::Column(Item *parent, float x, float y)
-    : Item (parent, x, y)
+Column::Column(Item *parent, float x, float y, float w, float h)
+    : Item (parent, x, y, w, h)
 {
 
 }

@@ -17,8 +17,6 @@
 
 #include "perf.h"
 
-double w, h, dpi_scale;
-
 int loadDemoData(NVGcontext* vg, DemoData* data)
 {
     int i;
@@ -26,7 +24,7 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
     if (vg == nullptr)
         return -1;
 
-    data->fontIcons = nvgCreateFont(vg, "icons", "entypo.ttf");
+    data->fontIcons = nvgCreateFont(vg, "fas", "fontawesome-solid.ttf");
     if (data->fontIcons == -1) {
         printf("Could not add font icons.\n");
         return -1;
@@ -39,11 +37,6 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
     data->fontBold = nvgCreateFont(vg, "sans-bold", "Roboto-Bold.ttf");
     if (data->fontBold == -1) {
         printf("Could not add font bold.\n");
-        return -1;
-    }
-    data->fontEmoji = nvgCreateFont(vg, "emoji", "NotoEmoji-Regular.ttf");
-    if (data->fontEmoji == -1) {
-        printf("Could not add font emoji.\n");
         return -1;
     }
     nvgAddFallbackFontId(vg, data->fontNormal, data->fontEmoji);
@@ -61,26 +54,34 @@ void freeDemoData(NVGcontext* vg, DemoData* data)
 
 }
 
-
+#ifdef PERF_GRAPH
 PerfGraph fps;
 double prevt = 0;
+#endif
 
 void render();
 extern Screen *gScreen;
 void render() {
+
+#ifdef PERF_GRAPH
     auto t = glfwGetTime();
     auto dt = t - prevt;
     prevt = t;
     updateGraph(&fps, dt);
+#endif
 
     Item::performAnimations();
     gScreen->drawAll();
+
+#ifdef PERF_GRAPH
     renderGraph(gScreen->vg(), 5,5, &fps);
+#endif
 
     glfwPollEvents();
 }
 
 EM_BOOL _sapp_emsc_size_changed(int event_type, const EmscriptenUiEvent* ui_event, void* user_data) {
+    double w, h, dpi_scale;
     emscripten_get_element_css_size("canvas", &w, &h);
     dpi_scale = emscripten_get_device_pixel_ratio();
     w *= dpi_scale;
@@ -99,14 +100,14 @@ int randInRange(int min, int max)
 
 int app_exec(ScreenReadyCallback screenReadyCallback)
 {
+    double w, h, dpi_scale;
+
     emscripten_get_element_css_size("canvas", &w, &h);
     emscripten_set_resize_callback(0, 0, 0, _sapp_emsc_size_changed);
     printf("main %f, %f\n", w, h);
 
     dpi_scale = emscripten_get_device_pixel_ratio();
-    w *= dpi_scale;
-    h *= dpi_scale;
-    emscripten_set_canvas_element_size("canvas", w, h);
+    emscripten_set_canvas_element_size("canvas", w*dpi_scale, h*dpi_scale);
 
     printf("main %f, %f, %f\n", w, h, dpi_scale);
 
@@ -121,9 +122,11 @@ int app_exec(ScreenReadyCallback screenReadyCallback)
     glfwSwapInterval(0);
 
     glfwSetTime(0);
-    prevt = glfwGetTime();
 
+#ifdef PERF_GRAPH
+    prevt = glfwGetTime();
     initGraph(&fps, GRAPH_RENDER_FPS, "Frame Time");
+#endif
 
     screenReadyCallback(screen);
 

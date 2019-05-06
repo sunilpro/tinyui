@@ -16,7 +16,7 @@ void Rectangle::draw(NVGcontext* vg) {
 
     nvgBeginPath(vg);
     nvgRoundedRect(vg, x(), y(), width(), hieght(), radius());
-    nvgFillColor(vg, color());
+    nvgFillColor(vg, m_color.vgColor());
     nvgFill(vg);
     if (borderWidth()) {
         nvgStrokeColor(vg, borderColor());

@@ -14,7 +14,7 @@ int randInRange(int min, int max)
 int app_exec(ScreenReadyCallback screenReadyCallback)
 {
     DemoData data;
-    Screen *screen = new Screen(1000, 800, 1.0);
+    Screen *screen = new Screen(1000, 800, 2.0);
 
     if (loadDemoData(screen->vg(), &data) == -1)
         return -1;
@@ -45,7 +45,7 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
     if (vg == nullptr)
         return -1;
 
-    data->fontIcons = nvgCreateFont(vg, "icons", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/entypo.ttf");
+    data->fontIcons = nvgCreateFont(vg, "fas", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/fontawesome-solid.ttf");
     if (data->fontIcons == -1) {
         printf("Could not add font icons.\n");
         return -1;
@@ -58,11 +58,6 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
     data->fontBold = nvgCreateFont(vg, "sans-bold", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/Roboto-Bold.ttf");
     if (data->fontBold == -1) {
         printf("Could not add font bold.\n");
-        return -1;
-    }
-    data->fontEmoji = nvgCreateFont(vg, "emoji", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/NotoEmoji-Regular.ttf");
-    if (data->fontEmoji == -1) {
-        printf("Could not add font emoji.\n");
         return -1;
     }
     nvgAddFallbackFontId(vg, data->fontNormal, data->fontEmoji);

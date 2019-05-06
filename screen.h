@@ -9,7 +9,6 @@ struct GLFWcursor;
 
 class Screen: public Item
 {
-    void setBackground(Color color);
 public:
     Screen(float w, float h, float dpr);
 
@@ -18,6 +17,7 @@ public:
     GLFWwindow* window() { return mGLFWWindow; }
     NVGcontext* vg() { return mNVGContext; }
 
+    void setBackground(Color color);
 
     /// Draw the Screen contents
     virtual void drawAll();

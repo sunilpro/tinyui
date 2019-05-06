@@ -10,13 +10,13 @@
 
 #include "property.hpp"
 
-/*
-#define PROPERTY(type, name) \
+
+#define PROP(cls, type, name) \
     public: \
     const type& name() const { return m_##name; } \
-    void set_##name(const type& v) { m_##name = v; emit(#name "_changed", &m_##name); }\
+    cls* set_##name(const type& v) { if(m_##name != v) { m_##name = v; emit(#name "_changed", &m_##name); } return this; }\
     protected: type m_##name \
-
+/*
 #define PROPERTY_PTR(type, name) \
     public: \
     type name() { return m_##name; } \
@@ -48,7 +48,7 @@ public:
      */
     void decRef(bool dealloc = true) const noexcept;
 
-    template <typename T, typename ...Args>
+    /*template <typename T, typename ...Args>
     int connect_member(std::string signal, T *inst, void (T::*func)(Args...)) {
       return connect(signal, [=](Args... args) {
         (inst->*func)(args...);
@@ -60,7 +60,7 @@ public:
         return connect(signal, [=](Args... args) {
           (inst->*func)(args...);
         });
-      }
+      }*/
 
     template <typename ...Args>
     void connect(std::string signal, std::function<void(Args...)> const& slot) const {

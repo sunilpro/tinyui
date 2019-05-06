@@ -49,7 +49,7 @@
 #include <cmath>
 
 Screen *gScreen = nullptr;
-Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w/dpr, h/dpr), mPixelRatio(dpr), mColor(Color::white())
+Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w, h), mColor(Color::white), mPixelRatio(dpr)
 {
     gScreen = this;
     memset(mCursors, 0, sizeof(GLFWcursor *) * (int) Cursor::CursorCount);
@@ -73,17 +73,11 @@ Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w/dpr, h/dpr), 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
-    /*glfwWindowHint(GLFW_SAMPLES, nSamples);
-    glfwWindowHint(GLFW_RED_BITS, colorBits);
-    glfwWindowHint(GLFW_GREEN_BITS, colorBits);
-    glfwWindowHint(GLFW_BLUE_BITS, colorBits);
-    glfwWindowHint(GLFW_ALPHA_BITS, alphaBits);
-    glfwWindowHint(GLFW_STENCIL_BITS, stencilBits);
-    glfwWindowHint(GLFW_DEPTH_BITS, depthBits);
-    glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-    glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);*/
-
+#ifdef EMSCRIPTEN
+    mGLFWWindow = glfwCreateWindow(w*mPixelRatio, h*mPixelRatio, "Hello World!", nullptr, nullptr);
+#else
     mGLFWWindow = glfwCreateWindow(w, h, "Hello World!", nullptr, nullptr);
+#endif
 
     if (!mGLFWWindow)
         throw std::runtime_error("Could not create an OpenGL 3 2 context!");
@@ -92,7 +86,7 @@ Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w/dpr, h/dpr), 
 
     glfwGetFramebufferSize(mGLFWWindow, &mFBSize[0], &mFBSize[1]);
     glViewport(0, 0, mFBSize[0], mFBSize[1]);
-    glClearColor(mColor.r/255, mColor.g/255, mColor.b/255, 1.f);
+    glClearColor(mColor.r/255.0f, mColor.g/255.0f, mColor.b/255.0f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glfwSwapInterval(0);
     glfwSwapBuffers(mGLFWWindow);
@@ -139,12 +133,12 @@ Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w/dpr, h/dpr), 
        size events and also catches things like dragging
        a window from a Retina-capable screen to a normal
        screen on Mac OS X */
-    glfwSetFramebufferSizeCallback(mGLFWWindow, [](GLFWwindow *w, int width, int height) {
+    glfwSetFramebufferSizeCallback(mGLFWWindow, [](GLFWwindow *, int width, int height) {
         gScreen->resizeCallbackEvent(width, height);
     });
 
     // notify when the screen has lost focus (e.g. application switch)
-    glfwSetWindowFocusCallback(mGLFWWindow, [](GLFWwindow *w, int focused) {
+    glfwSetWindowFocusCallback(mGLFWWindow, [](GLFWwindow *, int focused) {
         gScreen->focusEvent(focused != 0);
     });
 
@@ -163,7 +157,7 @@ void Screen::initialize(GLFWwindow *window) {
 #ifdef EMSCRIPTEN
     mNVGContext = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
 #else
-    mNVGContext = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
+    mNVGContext = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
 #endif
     if (mNVGContext == nullptr)
         throw std::runtime_error("Could not initialize NanoVG!");
@@ -178,8 +172,12 @@ void Screen::initialize(GLFWwindow *window) {
     nvgEndFrame(mNVGContext);
 }
 
+void Screen::setBackground(Color color) {
+    mColor = color;
+}
+
 void Screen::drawAll() {
-    glClearColor(mColor.r/255, mColor.g/255, mColor.b/255, 1.f);
+    glClearColor(mColor.r/255.0f, mColor.g/255.0f, mColor.b/255.0f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     drawContents();
@@ -196,9 +194,12 @@ void Screen::drawWidgets() {
     glfwGetWindowSize(mGLFWWindow, &mSize[0], &mSize[1]);
 
     glViewport(0, 0, mFBSize[0], mFBSize[1]);
+    //printf("mSize = (%d, %d)\n", mSize[0], mSize[1]);
     //glBindSampler(0, 0);
+#ifdef EMSCRIPTEN
     mSize[0] = mSize[0]/mPixelRatio;
     mSize[1] = mSize[1]/mPixelRatio;
+#endif
     nvgBeginFrame(mNVGContext, mSize[0], mSize[1], mPixelRatio);
 
     draw(mNVGContext);
@@ -331,7 +332,7 @@ bool Screen::resizeCallbackEvent(int, int) {
     mFBSize[0] = fbSize[0]; mSize[0] = size[0];
     mFBSize[1] = fbSize[1]; mSize[1] = size[1];
 
-    printf("resizeCallbackEvent\n");
+    //printf("resizeCallbackEvent\n");
     return false;
 }
 

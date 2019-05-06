@@ -8,7 +8,7 @@ public:
     PROPERTY(float, spacing) = 0;
     PROPERTY(float, padding) = 0;
 public:
-    Row(Item *parent, float x = 0, float y = 0);
+    Row(Item *parent, float x = 0, float y = 0, float w = 0, float h = 0);
     virtual void performLayout() override;
 };
 

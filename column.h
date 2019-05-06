@@ -6,10 +6,10 @@
 class Column: public Item
 {
 public:
-    PROPERTY(float, spacing) = 0;
-    PROPERTY(float, padding) = 0;
+    PROP(Column, float, spacing) = 0;
+    PROP(Column, float, padding) = 0;
 public:
-    Column(Item *parent, float x = 0, float y = 0);
+    Column(Item *parent, float x = 0, float y = 0, float width = 0, float hieght = 0);
     virtual void performLayout() override;
 };
 

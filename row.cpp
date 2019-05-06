@@ -1,6 +1,6 @@
 #include "row.h"
 
-Row::Row(Item *parent, float x, float y): Item(parent, x, y) {
+Row::Row(Item *parent, float x, float y, float w, float h): Item(parent, x, y, w, h) {
 
 }
 

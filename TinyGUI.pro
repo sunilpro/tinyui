@@ -29,6 +29,7 @@ SOURCES += \
     row.cpp \
     screen.cpp \
     examples/tagcloud.cpp \
+    examples/director_admin.cpp \
     text.cpp
 
 macx {

@@ -103,12 +103,10 @@ void setupTagcloud(Screen *screen) {
     double started = glfwGetTime();
     for (size_t i=0; i < tokens.size(); ++i) {
         auto txt = new Text(nullptr, 400, 400);
-        txt->fontSize = randInRange(20, 80);
-        txt->color.r = rand() %255;
-        txt->color.g = rand() %255;
-        txt->color.b = rand() %255;
-        txt->text = tokens[i];
-        txt->performLayout();
+        txt->set_fontSize(randInRange(20, 80))
+        ->set_color(Color::random())
+        ->set_text(tokens[i])
+        ->performLayout();
         float x,y;
         //double start = glfwGetTime();
         if(findFreeRectangle((Quadrant)(i%4), root, txt->width(), txt->hieght(), x, y)) {
@@ -117,7 +115,7 @@ void setupTagcloud(Screen *screen) {
             txt->y = y;
             root->addChild(txt);
         } else {
-            printf("-> No Free Rectangle (%f, %f) %s %d\n", txt->width(), txt->hieght(), tokens[i].c_str(), txt->fontSize);
+            printf("-> No Free Rectangle (%f, %f) %s %d\n", txt->width(), txt->hieght(), tokens[i].c_str(), txt->fontSize());
         }
     }
 
@@ -142,7 +140,7 @@ void setupTagcloud(Screen *screen) {
     fflush(stdout);
 }
 
-int main() {
+int _main() {
     std::srand(time(nullptr));
     return app_exec(setupTagcloud);
 }
