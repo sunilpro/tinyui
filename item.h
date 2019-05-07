@@ -58,9 +58,9 @@ public:
 
     const std::vector<Item *> &children() const { return mChildren; }
 
-    virtual void addChild(int index, Item * widget);
+    virtual Item* addChild(int index, Item * widget);
 
-    void addChild(Item * widget);
+    Item* addChild(Item * widget);
 
     void removeChild(const Item *widget);
 

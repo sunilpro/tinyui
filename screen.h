@@ -37,7 +37,7 @@ protected:
 
     bool keyboardCharacterEvent(unsigned int codepoint);
 
-    bool cursorPosCallbackEvent(double x, double y);
+    bool cursorPosCallbackEvent(float x, float y);
 
     bool mouseButtonCallbackEvent(int button, int action, int modifiers);
 

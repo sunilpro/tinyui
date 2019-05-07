@@ -67,7 +67,7 @@ void setupUI(Screen *screen) {
         }
         {
             auto rect1 = root->add<Rectangle>(100, 600, 200, 100);
-            rect1->radius = 10;
+            rect1->set_radius(10);
             rect1->set_color(Color(255, 0, 255, 255));
             rect1->anchors = new Anchors(rect1);
             rect1->anchors()->bind(rect1->anchors()->left, flickable, flickable->anchors()->left);

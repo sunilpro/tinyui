@@ -63,15 +63,16 @@ Item::~Item() {
     }
 }
 
-void Item::addChild(int index, Item * widget) {
+Item* Item::addChild(int index, Item * widget) {
     assert(index <= childCount());
     mChildren.insert(mChildren.begin() + index, widget);
     widget->incRef();
     widget->parent = this;
+    return widget;
 }
 
-void Item::addChild(Item * widget) {
-    addChild(childCount(), widget);
+Item* Item::addChild(Item * widget) {
+    return addChild(childCount(), widget);
 }
 
 void Item::removeChild(const Item *widget) {
@@ -131,7 +132,8 @@ bool Item::mouseMotionEvent(float mx, float my, float rx, float ry, int button, 
         Item *child = *it;
         if (!child->visible())
             continue;
-        bool contained = child->contains(mx - x(), my - y()), prevContained = child->contains(mx - x() - rx, my - y() - ry);
+        bool contained = child->contains(mx - x(), my - y());
+        bool prevContained = child->contains(mx - x() - rx, my - y() - ry);
         if (contained != prevContained)
             child->mouseEnterEvent(mx, my, contained);
         if ((contained || prevContained) &&
@@ -181,13 +183,13 @@ void Item::performLayout() {
 }
 
 void Item::draw(NVGcontext *ctx) {
-#if 0
-    nvgStrokeWidth(ctx, 1.0f);
-    nvgBeginPath(ctx);
-    nvgRect(ctx, x() - 0.5f, y() - 0.5f, width() + 1, hieght() + 1);
-    nvgStrokeColor(ctx, nvgRGBA(255, 0, 0, 255));
-    nvgStroke(ctx);
-#endif
+    if( 0 ) {
+        nvgStrokeWidth(ctx, 1.0f);
+        nvgBeginPath(ctx);
+        nvgRect(ctx, x() - 0.5f, y() - 0.5f, width() + 1, hieght() + 1);
+        nvgStrokeColor(ctx, nvgRGBA(255, 0, 0, 255));
+        nvgStroke(ctx);
+    }
 
     performLayout();
 

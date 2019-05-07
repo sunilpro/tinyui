@@ -9,11 +9,9 @@ bool operator!=(const NVGcolor& lhs, const NVGcolor& rhs);
 class Rectangle: public Item
 {
     PROP(Rectangle, Color, color) = Color::white;
-
-public:
-    PROPERTY(float, radius);
-    PROPERTY(int, borderWidth) = 0;
-    PROPERTY(NVGcolor, borderColor) = nvgRGBA(0, 0, 0, 255);
+    PROP(Rectangle, Color, borderColor) = Color::black;
+    PROP(Rectangle, float, radius) = 0;
+    PROP(Rectangle, int, borderWidth) = 0;
 
 public:
     Rectangle(Item *parent, float x = 0, float y = 0, float width = 0, float hieght = 0);

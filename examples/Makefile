@@ -4,7 +4,7 @@ SRC = ../nanovg.c ../app_wasm.cpp ../rectangle.cpp \
     ../item.cpp ../anchors.cpp ../object.cpp \
     ../screen.cpp ../flickable.cpp ../row.cpp \
     ../column.cpp ../text.cpp ../listview.cpp \
-    ../color.cpp ../perf.c
+    ../color.cpp ../mousearea.cpp ../perf.c
 
 SRC += tagcloud.cpp
 

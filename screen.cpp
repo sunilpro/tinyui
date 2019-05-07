@@ -102,7 +102,11 @@ Screen::Screen(float w, float h, float dpr): Item(nullptr, 0, 0, w, h), mColor(C
 
     /* Propagate GLFW events to the appropriate Screen instance */
     glfwSetCursorPosCallback(mGLFWWindow, [](GLFWwindow *, double x, double y) {
+#ifdef EMSCRIPTEN
+        gScreen->cursorPosCallbackEvent(x/gScreen->mPixelRatio, y/gScreen->mPixelRatio);
+#else
         gScreen->cursorPosCallbackEvent(x, y);
+#endif
     });
     glfwSetMouseButtonCallback(mGLFWWindow, [](GLFWwindow *, int button, int action, int modifiers) {
         gScreen->mouseButtonCallbackEvent(button, action, modifiers);
@@ -226,13 +230,13 @@ bool Screen::keyboardCharacterEvent(unsigned int codepoint) {
     return false;
 }
 
-bool Screen::cursorPosCallbackEvent(double x, double y) {
-    int p[2] = {(int) (x/mPixelRatio), (int) (y/mPixelRatio)};
+bool Screen::cursorPosCallbackEvent(float x, float y) {
+    float p[2] = {x, y};
 
     bool ret = false;
     try {
-        p[0] -= 1;
-        p[1] -= 2;
+        //p[0] -= 1;
+        //p[1] -= 2;
 
         if (!mDragActive) {
             Item *widget = findItem(p[0], p[1]);
@@ -287,8 +291,7 @@ bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
             mDragWidget = nullptr;
         }
 
-        return mouseButtonEvent(mMousePos[0], mMousePos[1], button, action == GLFW_PRESS,
-                mModifiers);
+        return mouseButtonEvent(mMousePos[0], mMousePos[1], button, action == GLFW_PRESS, mModifiers);
     } catch (const std::exception &e) {
         std::cerr << "Caught exception in event handler: " << e.what() << std::endl;
         return false;

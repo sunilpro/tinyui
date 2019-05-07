@@ -11,16 +11,13 @@ Rectangle::Rectangle(Item *parent, float x, float y, float width, float hieght)
 }
 
 void Rectangle::draw(NVGcontext* vg) {
-
-    //nvgTranslate(vg, m_parent->x(), m_parent->y());
-
     nvgBeginPath(vg);
-    nvgRoundedRect(vg, x(), y(), width(), hieght(), radius());
+    nvgRoundedRect(vg, x(), y(), width(), hieght(), m_radius);
     nvgFillColor(vg, m_color.vgColor());
     nvgFill(vg);
     if (borderWidth()) {
-        nvgStrokeColor(vg, borderColor());
-        nvgStrokeWidth(vg, borderWidth());
+        nvgStrokeColor(vg, m_borderColor.vgColor());
+        nvgStrokeWidth(vg, m_borderWidth);
         nvgStroke(vg);
     }
 
