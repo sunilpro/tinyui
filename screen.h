@@ -6,6 +6,7 @@
 
 struct GLFWwindow;
 struct GLFWcursor;
+class Popup;
 
 class Screen: public Item
 {
@@ -29,6 +30,8 @@ public:
     void drawWidgets();
 
     void setCursor(Cursor cursor);
+
+    Popup* popup() { return mPopup; }
 
 protected:
     void initialize(GLFWwindow *window);
@@ -56,6 +59,7 @@ private:
     Color mColor;
     std::vector<Item *> mFocusPath;
     bool mDragActive;
+    Popup *mPopup;
     Item *mDragWidget = nullptr;
     float mPixelRatio;
     GLFWwindow *mGLFWWindow;

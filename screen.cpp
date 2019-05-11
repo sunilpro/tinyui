@@ -1,4 +1,5 @@
 #include "screen.h"
+#include "popup.h"
 
 #ifdef __APPLE__
 #	define GLFW_INCLUDE_GLCOREARB
@@ -177,6 +178,8 @@ void Screen::initialize(GLFWwindow *window) {
     /// Fixes retina display-related font rendering issue (#185)
     nvgBeginFrame(mNVGContext, mSize[0], mSize[1], mPixelRatio);
     nvgEndFrame(mNVGContext);
+
+    mPopup = add<Popup>(0, 0, 200, 400);
 }
 
 Screen::~Screen() {
@@ -284,6 +287,9 @@ bool Screen::cursorPosCallbackEvent(float x, float y) {
 bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
     mModifiers = modifiers;
     try {
+        if (action != GLFW_PRESS && popup()->visible() && popup()->anchorItem()) {
+            popup()->visible = popup()->anchorItem()->containsAbs(mMousePos[0], mMousePos[1]);
+        }
         if (action == GLFW_PRESS)
             mMouseState |= 1 << button;
         else

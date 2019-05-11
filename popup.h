@@ -10,6 +10,9 @@ public:
     virtual void draw(NVGcontext* ctx) override;
 
     void show(Item *anchorItem);
+    Item *anchorItem() { return mAnchorItem; }
+private:
+    Item *mAnchorItem = nullptr;
 };
 
 #endif // POPUP_H

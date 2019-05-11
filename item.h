@@ -70,6 +70,8 @@ public:
     /// Returns the index of a specific child or -1 if not found
     int childIndex(Item* widget) const;
 
+    void bringChildToFront(Item *child);
+
     /// Variadic shorthand notation to construct and add a child widget
     template<typename WidgetClass, typename... Args>
     WidgetClass* add(const Args&... args) {
@@ -77,23 +79,11 @@ public:
     }
 
     /// Return the absolute position on screen
-    void absolutePosition(float *ax, float *ay) const {
-        if (parent()) {
-            float _x, _y;
-            parent()->absolutePosition(&_x, &_y);
-            *ax = _x + x();
-            *ay = _y + y();
-        } else {
-            *ax = x();
-            *ay = y();
-        }
-    }
+    void absolutePosition(float *ax, float *ay) const;
 
-    bool contains(float x, float y) const {
-        float dx = x - this->x();
-        float dy = y - this->y();
-        return dx >= 0 && dy >= 0 && dx < width() && dy < hieght();
-    }
+    bool contains(float x, float y) const;
+
+    bool containsAbs(float x, float y) const;
 
     /// Determine the widget located at the given position value (recursive)
     Item *findItem(float x, float y);

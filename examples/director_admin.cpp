@@ -54,7 +54,6 @@ static void setupUI(Screen *screen) {
         row->addChild(Text::createIcon(40, 50, "\uf0c9", 0x333333FF, 24));
     }
 
-    auto popup = screen->add<Popup>(0,50, 200,400);
     {
         auto row = titleBar->add<Row>(0, 0, 0, 50);
         row->anchors = new Anchors(row);
@@ -64,7 +63,7 @@ static void setupUI(Screen *screen) {
         createBadge(btnMail, 15, 15, "4", 0x27C247FF, 0xDFF5E4FF);
         btnMail->clicked([=](bool down) -> bool {
             if (!down) return false;
-            popup->show(btnMail);
+            gScreen->popup()->show(btnMail);
             return true;
         });
 
@@ -72,14 +71,14 @@ static void setupUI(Screen *screen) {
         createBadge(btnTasks, 15, 15, "9", 0xF05050FF, 0xFAE6E6FF);
         btnTasks->clicked([=](bool down) -> bool {
             if (!down) return false;
-            popup->show(btnTasks);
+            gScreen->popup()->show(btnTasks);
             return true;
         });
 
         auto btnUser = createButton(row, 128, 50, "\uf007 Sunil Reddy\uf0d7");
         btnUser->clicked([=](bool down) -> bool {
             if (!down) return false;
-            popup->show(btnUser);
+            gScreen->popup()->show(btnUser);
             return true;
         });
     }

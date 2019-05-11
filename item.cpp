@@ -86,11 +86,20 @@ void Item::removeChild(int index) {
     widget->decRef();
 }
 
-int Item::childIndex(Item* widget) const {
-    auto it = std::find(mChildren.begin(), mChildren.end(), widget);
+int Item::childIndex(Item* child) const {
+    auto it = std::find(mChildren.begin(), mChildren.end(), child);
     if (it == mChildren.end())
         return -1;
     return (int) (it - mChildren.begin());
+}
+
+void Item::bringChildToFront(Item *child) {
+    auto itemIndex = childIndex(child);
+    if (itemIndex == -1 || itemIndex == mChildren.size()-1)
+        return;
+    printf("bringChildToFront %d\n", itemIndex);
+    auto it = mChildren.begin() + itemIndex;
+    std::rotate(it, it + 1, mChildren.end());
 }
 
 Item *Item::findItem(float x, float y) {
@@ -108,6 +117,31 @@ Item *Item::findChild(float x, float y) {
             return child;
     }
     return nullptr;
+}
+void Item::absolutePosition(float *ax, float *ay) const {
+    if (parent()) {
+        float _x, _y;
+        parent()->absolutePosition(&_x, &_y);
+        *ax = _x + x();
+        *ay = _y + y();
+    } else {
+        *ax = x();
+        *ay = y();
+    }
+}
+
+bool Item::contains(float x, float y) const {
+    float dx = x - this->x();
+    float dy = y - this->y();
+    return dx >= 0 && dy >= 0 && dx < width() && dy < hieght();
+}
+
+bool Item::containsAbs(float x, float y) const {
+    float ax, ay;
+    absolutePosition(&ax, &ay);
+    float dx = x - ax;
+    float dy = y - ay;
+    return dx >= 0 && dy >= 0 && dx < width() && dy < hieght();
 }
 
 void Item::requestFocus() {

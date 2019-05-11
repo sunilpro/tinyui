@@ -9,10 +9,12 @@ Popup::Popup(Item *parent, float x, float y, float width, float hieght):
 }
 
 void Popup::show(Item *anchorItem) {
+    mAnchorItem = anchorItem;
     float ax, ay;
     anchorItem->absolutePosition(&ax, &ay);
-    x = ax-200+anchorItem->width();
+    x = ax-200+mAnchorItem->width();
     y = ay+anchorItem->hieght();
+    parent()->bringChildToFront(this);
     visible = true;
 }
 
