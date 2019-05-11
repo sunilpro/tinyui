@@ -40,16 +40,11 @@ public:
     PROPERTY(Item*, parent);
     PROPERTY(Anchors*, anchors) = nullptr;
     PROPERTY(bool, visible);
-    PROPERTY(bool, focused) = false;
+    PROPERTY(bool, focus) = false;
     PROPERTY(float, x);
     PROPERTY(float, y);
     PROPERTY(float, width);
     PROPERTY(float, hieght);
-
-    /// Return a pointer to the cursor of the widget
-    Cursor cursor() const { return mCursor; }
-    /// Set the cursor of the widget
-    void setCursor(Cursor cursor) { mCursor = cursor; }
 
 public:
     Item(Item *parent, float x = 0, float y = 0, float width = 0, float hieght = 0);
@@ -138,7 +133,6 @@ public:
 protected:
     virtual ~Item();
     std::vector<Item *> mChildren;
-    Cursor mCursor = Cursor::Arrow;
     bool mMouseFocus;
 };
 #endif // ITEM_H

@@ -4,7 +4,9 @@
 #include "column.h"
 #include "row.h"
 #include "mousearea.h"
+#include "popup.h"
 #include <GLFW/glfw3.h>
+extern Screen *gScreen;
 extern int randInRange(int min, int max);
 
 Rectangle* createBadge(Item *container, float width, float hieght, const char *text, Color bkgColor, Color txtColor) {
@@ -23,11 +25,16 @@ MouseArea* createButton(Item *container, float width, float hieght, const char *
     auto mouseArea = container->add<MouseArea>(0, 0, width, hieght);
     auto bkg = mouseArea->add<Rectangle>(0, 0, width, hieght);
     auto txt = bkg->addChild(Text::createIcon(width, hieght, text, 0x333333FF, 14));
-    mouseArea->hovered([=](bool entered) -> bool {
+    auto h = [=](bool entered) -> bool {
+        if(mouseArea->focus()) entered = true;
         static_cast<Text*>(txt)->set_color(entered ? 0xCCCCCCFF: 0x333333FF);
         bkg->set_color(entered ? 0x333333FF: 0x0);
+        gScreen->setCursor(entered ? Cursor::Hand : Cursor::Arrow);
+        //printf("MouseArea=%p %d\n", mouseArea, mouseArea->cursor());
         return true;
-    });
+    };
+    mouseArea->hovered(h);
+    mouseArea->focused(h);
     return mouseArea;
 }
 
@@ -47,6 +54,7 @@ static void setupUI(Screen *screen) {
         row->addChild(Text::createIcon(40, 50, "\uf0c9", 0x333333FF, 24));
     }
 
+    auto popup = screen->add<Popup>(0,50, 200,400);
     {
         auto row = titleBar->add<Row>(0, 0, 0, 50);
         row->anchors = new Anchors(row);
@@ -54,11 +62,24 @@ static void setupUI(Screen *screen) {
 
         auto btnMail = createButton(row, 40, 50, "\uf0e0");
         createBadge(btnMail, 15, 15, "4", 0x27C247FF, 0xDFF5E4FF);
+        btnMail->clicked([=](bool down) -> bool {
+            if (!down) return false;
+            popup->show(btnMail);
+            return true;
+        });
 
         auto btnTasks = createButton(row, 40, 50, "\uf0ae");
         createBadge(btnTasks, 15, 15, "9", 0xF05050FF, 0xFAE6E6FF);
+        btnTasks->clicked([=](bool down) -> bool {
+            if (!down) return false;
+            popup->show(btnTasks);
+            return true;
+        });
 
-        createButton(row, 128, 50, "\uf007 Sunil Reddy\uf0d7")->clicked([=](bool down) -> bool {
+        auto btnUser = createButton(row, 128, 50, "\uf007 Sunil Reddy\uf0d7");
+        btnUser->clicked([=](bool down) -> bool {
+            if (!down) return false;
+            popup->show(btnUser);
             return true;
         });
     }

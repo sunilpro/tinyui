@@ -122,7 +122,7 @@ bool Item::mouseButtonEvent(float mx, float my, int button, bool down, int modif
                 child->mouseButtonEvent(mx - x(), my - y(), button, down, modifiers))
             return true;
     }
-    if (button == GLFW_MOUSE_BUTTON_1 && down && !focused())
+    if (button == GLFW_MOUSE_BUTTON_1 && down && !focus())
         requestFocus();
     return false;
 }
@@ -153,7 +153,7 @@ bool Item::mouseEnterEvent(float, float, bool enter) {
 }
 
 bool Item::focusEvent(bool focused) {
-    this->focused = focused;
+    this->focus = focused;
     return false;
 }
 

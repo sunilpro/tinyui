@@ -25,6 +25,7 @@ SOURCES += \
     perf.c \
     item.cpp \
     object.cpp \
+    popup.cpp \
     rectangle.cpp \
     anchors.cpp \
     row.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     nanovg_gl_utils.h \
     nanovg_gl.h \
     nanovg.h \
+    popup.h \
     row.h \
     screen.h \
     stb_image.h \

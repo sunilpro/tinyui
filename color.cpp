@@ -15,7 +15,7 @@ Color Color::random() {
     return color;
 }
 
-NVGcolor Color::vgColor() {
+NVGcolor Color::vgColor() const {
     NVGcolor color;
     // Use longer initialization to suppress warning.
     color.r = r / 255.0f;

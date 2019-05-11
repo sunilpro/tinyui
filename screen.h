@@ -11,6 +11,7 @@ class Screen: public Item
 {
 public:
     Screen(float w, float h, float dpr);
+    virtual ~Screen();
 
     void updateFocus(Item *widget);
 
@@ -26,6 +27,8 @@ public:
     virtual void drawContents() { /* To be overridden */ }
 
     void drawWidgets();
+
+    void setCursor(Cursor cursor);
 
 protected:
     void initialize(GLFWwindow *window);
@@ -60,7 +63,7 @@ private:
     GLFWcursor *mCursors[(int) Cursor::CursorCount];
     Cursor mCursor = Cursor::Arrow;
     int mMouseState, mModifiers;
-    int mMousePos[2];
+    float mMousePos[2];
     int mFBSize[2];
     int mSize[2];
 };

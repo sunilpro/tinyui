@@ -26,7 +26,7 @@ struct Color
 
     constexpr Color(uint32_t rgba): rgba(rgba) {}
 
-    NVGcolor vgColor();
+    NVGcolor vgColor() const;
 
     union {
         uint32_t rgba;

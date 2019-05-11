@@ -171,13 +171,37 @@ void Screen::initialize(GLFWwindow *window) {
     mMouseState = mModifiers = 0;
     mDragActive = false;
 
+    for (int i=0; i < (int) Cursor::CursorCount; ++i)
+        mCursors[i] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR + i);
+
     /// Fixes retina display-related font rendering issue (#185)
     nvgBeginFrame(mNVGContext, mSize[0], mSize[1], mPixelRatio);
     nvgEndFrame(mNVGContext);
 }
 
+Screen::~Screen() {
+    for (int i=0; i < (int) Cursor::CursorCount; ++i) {
+        if (mCursors[i])
+            glfwDestroyCursor(mCursors[i]);
+    }
+#ifdef EMSCRIPTEN
+    if (mNVGContext)
+        nvgDeleteGLES2(mNVGContext);
+#else
+    if (mNVGContext)
+        nvgDeleteGL3(mNVGContext);
+#endif
+    if (mGLFWWindow)
+        glfwDestroyWindow(mGLFWWindow);
+}
+
 void Screen::setBackground(Color color) {
     mColor = color;
+}
+
+void Screen::setCursor(Cursor cursor) {
+    mCursor = cursor;
+    glfwSetCursor(mGLFWWindow, mCursors[(int) mCursor]);
 }
 
 void Screen::drawAll() {
@@ -214,7 +238,7 @@ void Screen::drawWidgets() {
 bool Screen::keyboardEvent(int key, int scancode, int action, int modifiers) {
     if (mFocusPath.size() > 0) {
         for (auto it = mFocusPath.rbegin() + 1; it != mFocusPath.rend(); ++it)
-            if ((*it)->focused() && (*it)->keyboardEvent(key, scancode, action, modifiers))
+            if ((*it)->focus() && (*it)->keyboardEvent(key, scancode, action, modifiers))
                 return true;
     }
 
@@ -224,7 +248,7 @@ bool Screen::keyboardEvent(int key, int scancode, int action, int modifiers) {
 bool Screen::keyboardCharacterEvent(unsigned int codepoint) {
     if (mFocusPath.size() > 0) {
         for (auto it = mFocusPath.rbegin() + 1; it != mFocusPath.rend(); ++it)
-            if ((*it)->focused() && (*it)->keyboardCharacterEvent(codepoint))
+            if ((*it)->focus() && (*it)->keyboardCharacterEvent(codepoint))
                 return true;
     }
     return false;
@@ -238,13 +262,7 @@ bool Screen::cursorPosCallbackEvent(float x, float y) {
         //p[0] -= 1;
         //p[1] -= 2;
 
-        if (!mDragActive) {
-            Item *widget = findItem(p[0], p[1]);
-            if (widget != nullptr && widget->cursor() != mCursor) {
-                mCursor = widget->cursor();
-                glfwSetCursor(mGLFWWindow, mCursors[(int) mCursor]);
-            }
-        } else {
+        if (mDragActive) {
             float _x, _y;
             mDragWidget->parent()->absolutePosition(&_x, &_y);
             ret = mDragWidget->mouseDragEvent(p[0] - _x, p[1] - _y, p[0] - mMousePos[0], p[1] - mMousePos[1],
@@ -258,7 +276,7 @@ bool Screen::cursorPosCallbackEvent(float x, float y) {
         mMousePos[1] = p[1];
         return ret;
     } catch (const std::exception &e) {
-        std::cerr << "Caught exception in event handler: " << e.what() << std::endl;
+        std::cerr << "Caught exception in event handler: " << __FUNCTION__ << e.what() << std::endl;
         return false;
     }
 }
@@ -293,7 +311,7 @@ bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
 
         return mouseButtonEvent(mMousePos[0], mMousePos[1], button, action == GLFW_PRESS, mModifiers);
     } catch (const std::exception &e) {
-        std::cerr << "Caught exception in event handler: " << e.what() << std::endl;
+        printf("Caught exception in event handler: %s %d\n", __FUNCTION__, action == GLFW_PRESS);
         return false;
     }
 }
@@ -302,7 +320,7 @@ bool Screen::keyCallbackEvent(int key, int scancode, int action, int mods) {
     try {
         return keyboardEvent(key, scancode, action, mods);
     } catch (const std::exception &e) {
-        std::cerr << "Caught exception in event handler: " << e.what() << std::endl;
+        std::cerr << "Caught exception in event handler: " << __FUNCTION__ << e.what() << std::endl;
         return false;
     }
 }
@@ -341,7 +359,7 @@ bool Screen::resizeCallbackEvent(int, int) {
 
 void Screen::updateFocus(Item *widget) {
     for (auto w: mFocusPath) {
-        if (!w->focused())
+        if (!w->focus())
             continue;
         w->focusEvent(false);
     }
