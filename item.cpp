@@ -97,7 +97,6 @@ void Item::bringChildToFront(Item *child) {
     auto itemIndex = childIndex(child);
     if (itemIndex == -1 || itemIndex == mChildren.size()-1)
         return;
-    printf("bringChildToFront %d\n", itemIndex);
     auto it = mChildren.begin() + itemIndex;
     std::rotate(it, it + 1, mChildren.end());
 }

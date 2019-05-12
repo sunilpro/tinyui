@@ -287,8 +287,9 @@ bool Screen::cursorPosCallbackEvent(float x, float y) {
 bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
     mModifiers = modifiers;
     try {
-        if (action != GLFW_PRESS && popup()->visible() && popup()->anchorItem()) {
-            popup()->visible = popup()->anchorItem()->containsAbs(mMousePos[0], mMousePos[1]);
+        if (action != GLFW_PRESS && popup()->isVisible() && popup()->anchorItem()) {
+            if (!popup()->anchorItem()->containsAbs(mMousePos[0], mMousePos[1]))
+                popup()->hide();
         }
         if (action == GLFW_PRESS)
             mMouseState |= 1 << button;

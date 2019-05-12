@@ -19,6 +19,7 @@ SOURCES += \
     column.cpp \
     flickable.cpp \
     listview.cpp \
+    menu.cpp \
     mousearea.cpp \
     nanovg.c \
     cute.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     column.h \
     flickable.h \
     listview.h \
+    menu.h \
     mousearea.h \
     object.h \
     item.h \

@@ -8,19 +8,36 @@ Popup::Popup(Item *parent, float x, float y, float width, float hieght):
     visible = false;
 }
 
-void Popup::show(Item *anchorItem) {
+void Popup::show(Item *anchorItem, Item *content) {
+    while(childCount() > 0)
+        removeChild(childAt(0));
+
     mAnchorItem = anchorItem;
     float ax, ay;
     anchorItem->absolutePosition(&ax, &ay);
     x = ax-200+mAnchorItem->width();
     y = ay+anchorItem->hieght();
     parent()->bringChildToFront(this);
+
+    addChild(content);
+    hieght = content->hieght() + 20;
+    content->hieght.on_change().connect([=](float h) { hieght = h;});
+
     visible = true;
+}
+
+void Popup::hide() {
+    printf("-> Popup::hide\n");
+    visible = false;
+    while(childCount() > 0)
+        removeChild(childAt(0));
 }
 
 void Popup::draw(NVGcontext *vg) {
     const int radius = 4;
     const Color color(Color::white);
+
+    nvgSave(vg);
 
     auto shadowPaint = nvgBoxGradient(vg, x(),y()+2, width(),hieght(), radius*2, 10, nvgRGBA(0,0,0,25), nvgRGBA(0,0,0,0));
     nvgBeginPath(vg);

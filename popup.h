@@ -3,13 +3,14 @@
 
 #include "item.h"
 
-class Popup: public Item
+class Popup: protected Item
 {
 public:
     Popup(Item *parent, float x, float y, float width, float hieght);
     virtual void draw(NVGcontext* ctx) override;
-
-    void show(Item *anchorItem);
+    bool isVisible() { return visible(); }
+    void show(Item *anchorItem, Item *content);
+    void hide();
     Item *anchorItem() { return mAnchorItem; }
 private:
     Item *mAnchorItem = nullptr;

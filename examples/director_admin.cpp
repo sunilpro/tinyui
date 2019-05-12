@@ -5,6 +5,7 @@
 #include "row.h"
 #include "mousearea.h"
 #include "popup.h"
+#include "menu.h"
 #include <GLFW/glfw3.h>
 extern Screen *gScreen;
 extern int randInRange(int min, int max);
@@ -63,7 +64,7 @@ static void setupUI(Screen *screen) {
         createBadge(btnMail, 15, 15, "4", 0x27C247FF, 0xDFF5E4FF);
         btnMail->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnMail);
+            gScreen->popup()->show(btnMail, new Rectangle(nullptr));
             return true;
         });
 
@@ -71,14 +72,23 @@ static void setupUI(Screen *screen) {
         createBadge(btnTasks, 15, 15, "9", 0xF05050FF, 0xFAE6E6FF);
         btnTasks->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnTasks);
+            gScreen->popup()->show(btnTasks, new Rectangle(nullptr));
             return true;
         });
 
         auto btnUser = createButton(row, 128, 50, "\uf007 Sunil Reddy\uf0d7");
         btnUser->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnUser);
+            auto menu = new Menu(nullptr);
+            menu->addMenuItem(Menu::MenuItem("Updates", "\uf1da", "10", 0x27C24CFF));
+            menu->addMenuItem(Menu::MenuItem("Messages", "\uf0e0", "5", 0xF05050FF));
+            menu->addMenuItem(Menu::MenuItem("Subscriptions", "\uf076", "3", 0x23B7E5FF));
+            menu->addMenuItem(Menu::MenuItem("FAQ", "\uf128", "11", 0x777777FF));
+            menu->addMenuItem(Menu::MenuItem());
+            menu->addMenuItem(Menu::MenuItem("Profile", "\uf007"));
+            menu->addMenuItem(Menu::MenuItem("Settings", "\uf013"));
+            menu->addMenuItem(Menu::MenuItem("Logout", "\uf05e"));
+            gScreen->popup()->show(btnUser, menu);
             return true;
         });
     }
