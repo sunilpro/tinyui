@@ -1,6 +1,7 @@
 #include "popup.h"
 #include "color.h"
 #include "nanovg.h"
+#include "rectangle.h"
 
 Popup::Popup(Item *parent, float x, float y, float width, float hieght):
     Item(parent, x, y, width, hieght)
@@ -20,8 +21,8 @@ void Popup::show(Item *anchorItem, Item *content) {
     parent()->bringChildToFront(this);
 
     addChild(content);
-    hieght = content->hieght() + 20;
-    content->hieght.on_change().connect([=](float h) { hieght = h;});
+    hieght = content->hieght();
+    //content->hieght.on_change().connect([=](float h) { hieght = h;});
 
     visible = true;
 }
@@ -47,10 +48,7 @@ void Popup::draw(NVGcontext *vg) {
     nvgFillPaint(vg, shadowPaint);
     nvgFill(vg);
 
-    nvgBeginPath(vg);
-    nvgRoundedRect(vg, x(), y(), width(), hieght(), radius);
-    nvgFillColor(vg, color.vgColor());
-    nvgFill(vg);
+    Rectangle::drawRect(vg, x(), y(), width(), hieght(), radius, color);
 
     nvgStrokeColor(vg, Color(0xDFDFDFFF).vgColor());
     nvgStrokeWidth(vg, 1);

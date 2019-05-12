@@ -64,7 +64,7 @@ static void setupUI(Screen *screen) {
         createBadge(btnMail, 15, 15, "4", 0x27C247FF, 0xDFF5E4FF);
         btnMail->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnMail, new Rectangle(nullptr));
+            gScreen->popup()->show(btnMail, new Rectangle(nullptr, 0, 0, 200, 100));
             return true;
         });
 
@@ -72,7 +72,7 @@ static void setupUI(Screen *screen) {
         createBadge(btnTasks, 15, 15, "9", 0xF05050FF, 0xFAE6E6FF);
         btnTasks->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnTasks, new Rectangle(nullptr));
+            gScreen->popup()->show(btnTasks, new Rectangle(nullptr, 0, 0, 200, 100));
             return true;
         });
 

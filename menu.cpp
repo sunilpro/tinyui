@@ -1,11 +1,13 @@
 #include "menu.h"
+#include "rectangle.h"
 
-Menu::Menu(Item *parent): Item(parent, 0, 0, 200, 200) {
+Menu::Menu(Item *parent): Item(parent, 0, 0, 200, 15) {
 
 }
 
 void Menu::addMenuItem(MenuItem item) {
     mMenuItems.push_back(item);
+    hieght = hieght() + (item.title.length() > 0 ? 36 : 28);
 }
 
 bool Menu::focusEvent(bool focused) {
@@ -21,10 +23,7 @@ void Menu::draw(NVGcontext* ctx) {
     float _y = y() + 15;
     for(const auto& entry: mMenuItems) {
         if (entry.title.length() <= 0) {
-            nvgBeginPath(ctx);
-            nvgRoundedRect(ctx, 0, _y+8, width(), 1, 0);
-            nvgFillColor(ctx, Color(0x0000001F).vgColor());
-            nvgFill(ctx);
+            Rectangle::drawRect(ctx, 0, _y+6, width(), 1, 0, 0x0000001F);
             _y += 28;
             continue;
         }
@@ -38,11 +37,9 @@ void Menu::draw(NVGcontext* ctx) {
 
         // Badge
         if(entry.badge.length() > 0) {
-            float b_x = width() - 28 - 18 - entry.badge.size()*12;
-            nvgBeginPath(ctx);
-            nvgRoundedRect(ctx, b_x, _y, entry.badge.size()*10 + 10, 20, 10);
-            nvgFillColor(ctx, entry.badgeColor.vgColor());
-            nvgFill(ctx);
+            const float b_w = entry.badge.size()*10;
+            const float b_x = width() - 28 - 18 - b_w;
+            Rectangle::drawRect(ctx, b_x, _y, b_w + 10, 20, 10, entry.badgeColor);
 
             //nvgFontFace(ctx, "sans-bold");
             //nvgFontSize(ctx, 16);
@@ -53,6 +50,5 @@ void Menu::draw(NVGcontext* ctx) {
 
         _y += 36;
     }
-    hieght = _y;
     Item::draw(ctx);
 }

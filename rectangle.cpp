@@ -10,11 +10,15 @@ Rectangle::Rectangle(Item *parent, float x, float y, float width, float hieght)
 
 }
 
+void Rectangle::drawRect(NVGcontext* ctx, float x, float y, float width, float hieght, float radius, Color color) {
+    nvgBeginPath(ctx);
+    nvgRoundedRect(ctx, x, y, width, hieght, radius);
+    nvgFillColor(ctx, color.vgColor());
+    nvgFill(ctx);
+}
+
 void Rectangle::draw(NVGcontext* vg) {
-    nvgBeginPath(vg);
-    nvgRoundedRect(vg, x(), y(), width(), hieght(), m_radius);
-    nvgFillColor(vg, m_color.vgColor());
-    nvgFill(vg);
+    drawRect(vg, x(), y(), width(), hieght(), m_radius, m_color);
     if (borderWidth()) {
         nvgStrokeColor(vg, m_borderColor.vgColor());
         nvgStrokeWidth(vg, m_borderWidth);

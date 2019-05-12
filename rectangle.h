@@ -17,6 +17,7 @@ public:
     Rectangle(Item *parent, float x = 0, float y = 0, float width = 0, float hieght = 0);
     virtual void draw(NVGcontext* ctx) override;
 
+    static void drawRect(NVGcontext* ctx, float x, float y, float width, float hieght, float radius, Color);
 };
 
 
