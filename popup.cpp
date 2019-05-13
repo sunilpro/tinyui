@@ -28,7 +28,6 @@ void Popup::show(Item *anchorItem, Item *content) {
 }
 
 void Popup::hide() {
-    printf("-> Popup::hide\n");
     visible = false;
     while(childCount() > 0)
         removeChild(childAt(0));

@@ -296,7 +296,7 @@ bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
         else
             mMouseState &= ~(1 << button);
 
-        auto dropWidget = findItem(mMousePos[0], mMousePos[1]);
+        /*auto dropWidget = findItem(mMousePos[0], mMousePos[1]);
         if (mDragActive && action == GLFW_RELEASE && dropWidget != mDragWidget) {
             float _x, _y;
             mDragWidget->parent()->absolutePosition(&_x, &_y);
@@ -314,10 +314,10 @@ bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
         } else {
             mDragActive = false;
             mDragWidget = nullptr;
-        }
+        }*/
 
         return mouseButtonEvent(mMousePos[0], mMousePos[1], button, action == GLFW_PRESS, mModifiers);
-    } catch (const std::exception &e) {
+    } catch (const std::exception &) {
         printf("Caught exception in event handler: %s %d\n", __FUNCTION__, action == GLFW_PRESS);
         return false;
     }

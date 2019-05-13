@@ -87,6 +87,7 @@ static void setupUI(Screen *screen) {
             menu->addMenuItem(Menu::MenuItem());
             menu->addMenuItem(Menu::MenuItem("Profile", "\uf007"));
             menu->addMenuItem(Menu::MenuItem("Settings", "\uf013"));
+            menu->addMenuItem(Menu::MenuItem());
             menu->addMenuItem(Menu::MenuItem("Logout", "\uf05e"));
             gScreen->popup()->show(btnUser, menu);
             return true;
