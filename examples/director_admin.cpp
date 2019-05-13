@@ -79,7 +79,7 @@ static void setupUI(Screen *screen) {
         auto btnUser = createButton(row, 128, 50, "\uf007 Sunil Reddy\uf0d7");
         btnUser->clicked([=](bool down) -> bool {
             if (!down) return false;
-            auto menu = new Menu(nullptr);
+            auto menu = new Menu("Account");
             menu->addMenuItem(Menu::MenuItem("Updates", "\uf1da", "10", 0x27C24CFF));
             menu->addMenuItem(Menu::MenuItem("Messages", "\uf0e0", "5", 0xF05050FF));
             menu->addMenuItem(Menu::MenuItem("Subscriptions", "\uf076", "3", 0x23B7E5FF));
@@ -89,7 +89,7 @@ static void setupUI(Screen *screen) {
             menu->addMenuItem(Menu::MenuItem("Settings", "\uf013"));
             menu->addMenuItem(Menu::MenuItem());
             menu->addMenuItem(Menu::MenuItem("Logout", "\uf05e"));
-            gScreen->popup()->show(btnUser, menu);
+            gScreen->popup()->show(btnUser, menu, 0xF9FAFCFF);
             return true;
         });
     }

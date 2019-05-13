@@ -17,7 +17,7 @@ public:
         Color       badgeColor;
     };
 public:
-    Menu(Item *parent);
+    Menu(const char *title);
     void addMenuItem(MenuItem item);
 
 protected:
@@ -26,6 +26,7 @@ protected:
     virtual bool mouseMotionEvent(float mx, float my, float rx, float ry, int button, int modifiers) override;
 
 private:
+    std::string mTitle;
     std::vector<MenuItem> mMenuItems;
     const MenuItem *mHoveredItem = nullptr;
 };

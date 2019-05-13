@@ -3,9 +3,9 @@
 
 #define ENTRY_HEIGHT 36
 #define DIVIDER_HEIGHT 24
-#define PADDING 15
+#define PADDING 18
 
-Menu::Menu(Item *parent): Item(parent, 0, 0, 200, 15) {
+Menu::Menu(const char *title): Item(nullptr, 0, 0, 220, PADDING + ENTRY_HEIGHT), mTitle(title) {
 
 }
 
@@ -20,9 +20,9 @@ bool Menu::focusEvent(bool) {
 
 bool Menu::mouseMotionEvent(float mx, float my, float, float, int, int) {
     mHoveredItem = nullptr;
-    if(mx < PADDING || mx > width()-2*PADDING || my < PADDING)
+    if(mx < PADDING || mx > width()-2*PADDING || my < ENTRY_HEIGHT+PADDING)
         return true;
-    float _y = y() + PADDING;
+    float _y = y() + ENTRY_HEIGHT + PADDING;
     for(const auto& entry: mMenuItems) {
         _y += entry.title.length() <= 0 ? DIVIDER_HEIGHT : ENTRY_HEIGHT;
         if (_y > my) {
@@ -36,7 +36,20 @@ bool Menu::mouseMotionEvent(float mx, float my, float, float, int, int) {
 
 void Menu::draw(NVGcontext* ctx) {
     const float _x = PADDING;
-    float _y = y() + PADDING;
+    float _y = y();
+
+    nvgFontFace(ctx, "fas");
+    nvgFontSize(ctx, 12);
+    nvgTextAlign(ctx, NVG_ALIGN_MIDDLE | NVG_ALIGN_CENTER);
+
+    Rectangle::drawRect(ctx, 1, _y + ENTRY_HEIGHT, width()-2, hieght() - _y - ENTRY_HEIGHT, 4, 0xFFFFFFFF);
+    nvgFillColor(ctx, Color(0x283744FF).vgColor());
+    nvgText(ctx, width()/2, _y+ENTRY_HEIGHT/2, mTitle.c_str(), nullptr);
+    _y += ENTRY_HEIGHT;
+    Rectangle::drawRect(ctx, 0, _y, width(), 1, 0, 0x00000011);
+
+    _y += PADDING;
+    nvgTextAlign(ctx, NVG_ALIGN_TOP | NVG_ALIGN_LEFT);
     for(const auto& entry: mMenuItems) {
         if (entry.title.length() <= 0) {
             Rectangle::drawRect(ctx, 0, _y+4, width(), 1, 0, 0x00000011);
@@ -50,18 +63,14 @@ void Menu::draw(NVGcontext* ctx) {
             textColor = 0xCCCCCCFF;
         }
 
-        nvgFontFace(ctx, "fas");
-        nvgFontSize(ctx, 12);
-        nvgTextAlign(ctx, NVG_ALIGN_TOP | NVG_ALIGN_LEFT);
         nvgFillColor(ctx, Color(textColor).vgColor());
         nvgText(ctx, _x, _y+5, entry.title.c_str(), nullptr);
-
-        nvgText(ctx, width() - 28, _y + 5, entry.icon.c_str(), nullptr);
+        nvgText(ctx, width() - 30, _y + 5, entry.icon.c_str(), nullptr);
 
         // Badge
         if(entry.badge.length() > 0) {
             const float b_w = entry.badge.size()*10;
-            const float b_x = width() - 28 - 18 - b_w;
+            const float b_x = width() - 30 - PADDING - b_w;
             Rectangle::drawRect(ctx, b_x, _y, b_w + 10, 20, 10, entry.badgeColor);
 
             //nvgFontFace(ctx, "sans-bold");

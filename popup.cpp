@@ -9,21 +9,23 @@ Popup::Popup(Item *parent, float x, float y, float width, float hieght):
     visible = false;
 }
 
-void Popup::show(Item *anchorItem, Item *content) {
+void Popup::show(Item *anchorItem, Item *content, Color backgroundColor) {
     while(childCount() > 0)
         removeChild(childAt(0));
 
+    mBackgroundColor = backgroundColor;
     mAnchorItem = anchorItem;
-    float ax, ay;
-    anchorItem->absolutePosition(&ax, &ay);
-    x = ax-200+mAnchorItem->width();
-    y = ay+anchorItem->hieght();
-    parent()->bringChildToFront(this);
 
     addChild(content);
+    width = content->width();
     hieght = content->hieght();
+    float ax, ay;
+    anchorItem->absolutePosition(&ax, &ay);
+    x = ax - width() + mAnchorItem->width() - 2;
+    y = ay + anchorItem->hieght();
     //content->hieght.on_change().connect([=](float h) { hieght = h;});
 
+    parent()->bringChildToFront(this);
     visible = true;
 }
 
@@ -35,8 +37,6 @@ void Popup::hide() {
 
 void Popup::draw(NVGcontext *vg) {
     const int radius = 4;
-    const Color color(Color::white);
-
     nvgSave(vg);
 
     auto shadowPaint = nvgBoxGradient(vg, x(),y()+2, width(),hieght(), radius*2, 10, nvgRGBA(0,0,0,25), nvgRGBA(0,0,0,0));
@@ -47,7 +47,7 @@ void Popup::draw(NVGcontext *vg) {
     nvgFillPaint(vg, shadowPaint);
     nvgFill(vg);
 
-    Rectangle::drawRect(vg, x(), y(), width(), hieght(), radius, color);
+    Rectangle::drawRect(vg, x(), y(), width(), hieght(), radius, mBackgroundColor);
 
     nvgStrokeColor(vg, Color(0xDFDFDFFF).vgColor());
     nvgStrokeWidth(vg, 1);
