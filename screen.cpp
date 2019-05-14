@@ -302,19 +302,19 @@ bool Screen::mouseButtonCallbackEvent(int button, int action, int modifiers) {
             mDragWidget->parent()->absolutePosition(&_x, &_y);
             mDragWidget->mouseButtonEvent(mMousePos[0] - _x, mMousePos[1] - _y, button,
                     false, mModifiers);
-        }
+        }*/
 
         if (action == GLFW_PRESS && (button == GLFW_MOUSE_BUTTON_1 || button == GLFW_MOUSE_BUTTON_2)) {
-            mDragWidget = findItem(mMousePos[0], mMousePos[1]);
-            if (mDragWidget == this)
-                mDragWidget = nullptr;
-            mDragActive = mDragWidget != nullptr;
-            if (!mDragActive)
+            //mDragWidget = findItem(mMousePos[0], mMousePos[1]);
+            //if (mDragWidget == this)
+              //  mDragWidget = nullptr;
+            //mDragActive = mDragWidget != nullptr;
+            //if (!mDragActive)
                 updateFocus(nullptr);
         } else {
             mDragActive = false;
             mDragWidget = nullptr;
-        }*/
+        }
 
         return mouseButtonEvent(mMousePos[0], mMousePos[1], button, action == GLFW_PRESS, mModifiers);
     } catch (const std::exception &) {

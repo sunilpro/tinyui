@@ -31,7 +31,7 @@ MouseArea* createButton(Item *container, float width, float hieght, const char *
         static_cast<Text*>(txt)->set_color(entered ? 0xCCCCCCFF: 0x333333FF);
         bkg->set_color(entered ? 0x333333FF: 0x0);
         gScreen->setCursor(entered ? Cursor::Hand : Cursor::Arrow);
-        //printf("MouseArea=%p %d\n", mouseArea, mouseArea->cursor());
+        //printf("MouseArea=%p %d\n", mouseArea, entered);
         return true;
     };
     mouseArea->hovered(h);
