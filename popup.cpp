@@ -17,6 +17,7 @@ void Popup::show(Item *anchorItem, Item *content, Color backgroundColor) {
     mAnchorItem = anchorItem;
 
     addChild(content);
+    content->performLayout();
     width = content->width();
     hieght = content->hieght();
     float ax, ay;
@@ -31,12 +32,17 @@ void Popup::show(Item *anchorItem, Item *content, Color backgroundColor) {
 
 void Popup::hide() {
     visible = false;
-    while(childCount() > 0)
-        removeChild(childAt(0));
+    //while(childCount() > 0)
+    //    removeChild(childAt(0));
 }
 
 void Popup::draw(NVGcontext *vg) {
     const int radius = 4;
+
+    Rectangle::drawRect(vg, x(), y(), width(), hieght(), radius, mBackgroundColor);
+
+    Item::draw(vg);
+
     nvgSave(vg);
 
     auto shadowPaint = nvgBoxGradient(vg, x(),y()+2, width(),hieght(), radius*2, 10, nvgRGBA(0,0,0,25), nvgRGBA(0,0,0,0));
@@ -47,7 +53,7 @@ void Popup::draw(NVGcontext *vg) {
     nvgFillPaint(vg, shadowPaint);
     nvgFill(vg);
 
-    Rectangle::drawRect(vg, x(), y(), width(), hieght(), radius, mBackgroundColor);
+    Rectangle::drawRect(vg, x(), y(), width(), hieght(), radius, 0x0);
 
     nvgStrokeColor(vg, Color(0xDFDFDFFF).vgColor());
     nvgStrokeWidth(vg, 1);
@@ -62,5 +68,4 @@ void Popup::draw(NVGcontext *vg) {
 
     nvgRestore(vg);
 
-    Item::draw(vg);
 }

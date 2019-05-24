@@ -45,17 +45,19 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
     if (vg == nullptr)
         return -1;
 
-    data->fontIcons = nvgCreateFont(vg, "fas", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/fontawesome-solid.ttf");
+#define RES_DIR "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/"
+
+    data->fontIcons = nvgCreateFont(vg, "fas", RES_DIR"fontawesome-solid.ttf");
     if (data->fontIcons == -1) {
         printf("Could not add font icons.\n");
         return -1;
     }
-    data->fontNormal = nvgCreateFont(vg, "sans", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/Roboto-Regular.ttf");
+    data->fontNormal = nvgCreateFont(vg, "sans", RES_DIR"Roboto-Regular.ttf");
     if (data->fontNormal == -1) {
         printf("Could not add font italic.\n");
         return -1;
     }
-    data->fontBold = nvgCreateFont(vg, "sans-bold", "/Users/sunilreddy/Desktop/crystalmatter/webassembly/tinygui/TinyGUI/resources/Roboto-Bold.ttf");
+    data->fontBold = nvgCreateFont(vg, "sans-bold", RES_DIR"Roboto-Bold.ttf");
     if (data->fontBold == -1) {
         printf("Could not add font bold.\n");
         return -1;

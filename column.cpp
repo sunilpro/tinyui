@@ -11,7 +11,7 @@ void Column::performLayout() {
     float maxWidth = 0;
     for (auto child : mChildren) {
         if (child->visible()) {
-            child->x = padding();
+            child->x = child->x() + padding();
             child->y = yOffset;
             yOffset += child->hieght() + spacing();
             if (child->width() > maxWidth)

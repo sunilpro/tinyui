@@ -6,7 +6,11 @@
 #include "mousearea.h"
 #include "popup.h"
 #include "menu.h"
+#include "listview.h"
 #include <GLFW/glfw3.h>
+
+#include <any>
+
 extern Screen *gScreen;
 extern int randInRange(int min, int max);
 
@@ -72,7 +76,62 @@ static void setupUI(Screen *screen) {
         createBadge(btnTasks, 15, 15, "9", 0xF05050FF, 0xFAE6E6FF);
         btnTasks->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnTasks, new Rectangle(nullptr, 0, 0, 200, 100));
+            auto listView = new ListView(nullptr, 0, 0, 200, 240);
+            class MyAdaptor: public ListAdaptor {
+                const std::vector<std::tuple<std::string, float, Color>> data = {
+                    {"Design some buttons", 0.2f, 0x27C24CFF},
+                    {"Create a nice theme", 0.4f, 0xF05050FF},
+                    {"Some task I need to do", 0.6f, 0x23B7E5FF},
+                    {"Design some buttons", 0.8f, 0xFAD733FF}
+                };
+            public:
+                virtual int count() {
+                    return data.size();
+                }
+
+                virtual float hieghtForitemAt(int) {
+                    return 60;
+                }
+
+                virtual ListItem *itemAt(int position) {
+                    auto [title, progress, color] = data.at(position);
+                    auto listItem = new ListItem(position, 0, 0, 200, 60);
+                    listItem->add<Text>(10, 10, 140, 20)->set_text(title)->set_fontSize(18)->set_color(0x666666FF);
+
+                    char progress_str[20];
+                    sprintf(progress_str, "%d%%", (int)(progress*100));
+                    std::string p = progress_str;
+                    listItem->add<Text>(200 - 30, 14, 30, 20)->set_text(p)->set_fontSize(14)->set_color(0xAAAAAAFF);
+
+                    auto progressBar = listItem->add<Rectangle>(10, 36, 180, 8)->set_color(0xCCCCCCAA)->set_radius(4);
+                    progressBar->add<Rectangle>(0, 0, 180*progress, 8)->set_color(color)->set_radius(4);
+
+                    listItem->add<Rectangle>(0, 59, 200, 1)->set_color(0xCCCCCCAA);
+                    return listItem;
+                }
+
+                virtual ~MyAdaptor() {
+
+                }
+            };
+            auto adapter = new MyAdaptor();
+            listView->setAdaptor(adapter);
+
+            auto col = new Column(nullptr, 0, 0, 200, 0);
+            col->add<Text>(10, 0, 180, 30)
+                        ->set_alignment(NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE)
+                        ->set_text("You have 9 tasks")
+                        ->set_color(0x444444FF)
+                        ->set_fontSize(18);
+            col->add<Rectangle>(0, 0, 200, 1)->set_color(0xCCCCCCAA);
+            col->addChild(listView);
+            col->add<Rectangle>(0, 0, 200, 30)->set_color(0xF4F4F4FF)
+               ->add<Text>(0, 0, 200, 30)
+                    ->set_alignment(NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE)
+                    ->set_text("View all tasks")
+                    ->set_color(0x444444FF)
+                    ->set_fontSize(16);
+            gScreen->popup()->show(btnTasks, col);
             return true;
         });
 

@@ -12,7 +12,7 @@ void ListView::setAdaptor(ListAdaptor *a) {
         mContentItem->addChild(item);
         performLayout();
 
-        printf("%d %f %f\n", item->position(), mContentItem->hieght(), hieght());
+        //printf("%d %f %f\n", item->position(), mContentItem->hieght(), hieght());
 
         if (mContentItem->children().back()->contains(0, hieght())) {
             //mContentItem->hieght = a->count() * (mContentItem->hieght()/i);

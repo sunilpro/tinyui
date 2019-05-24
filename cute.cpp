@@ -15,6 +15,8 @@
 #include "text.h"
 #include "screen.h"
 
+#include <any>
+
 class MyAdaptor: public ListAdaptor {
 public:
     virtual int count() {
