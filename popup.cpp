@@ -64,6 +64,7 @@ void Popup::draw(NVGcontext *vg) {
     nvgMoveTo(vg, baseX, y()+1);
     nvgLineTo(vg, baseX + 10, y() - 11);
     nvgLineTo(vg, baseX + 20, y()+1);
+    nvgFillColor(vg, mBackgroundColor.vgColor());
     nvgFill(vg);
 
     nvgRestore(vg);

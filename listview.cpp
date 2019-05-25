@@ -48,16 +48,24 @@ void ListView::onScrolled() {
 
     while(!mContentItem->children().front()->contains(0, currentY-100) && mContentItem->children().front()->y() > currentY-100) {
         auto first = static_cast<ListItem*>(mContentItem->children().front());
-        auto item = mAdaptor->itemAt(first->position() - 1);
-        item->y = first->y() - item->hieght() - spacing();
-        mContentItem->addChild(0, item);
+        if (first->position() > 0) {
+            auto item = mAdaptor->itemAt(first->position() - 1);
+            item->y = first->y() - item->hieght() - spacing();
+            mContentItem->addChild(0, item);
+        } else {
+            break;
+        }
     }
 
     while(!mContentItem->children().back()->contains(0, currentY + hieght() + 100) && mContentItem->children().back()->y() < (currentY + hieght()+100)) {
         auto last = static_cast<ListItem*>(mContentItem->children().back());
-        auto item = mAdaptor->itemAt(last->position() + 1);
-        mContentItem->addChild(item);
-        item->y = last->y() + last->hieght() + spacing();
+        if(last->position() < mAdaptor->count()-1) {
+            auto item = mAdaptor->itemAt(last->position() + 1);
+            mContentItem->addChild(item);
+            item->y = last->y() + last->hieght() + spacing();
+        } else {
+            break;
+        }
     }
 }
 

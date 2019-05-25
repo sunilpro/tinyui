@@ -68,7 +68,57 @@ static void setupUI(Screen *screen) {
         createBadge(btnMail, 15, 15, "4", 0x27C247FF, 0xDFF5E4FF);
         btnMail->clicked([=](bool down) -> bool {
             if (!down) return false;
-            gScreen->popup()->show(btnMail, new Rectangle(nullptr, 0, 0, 200, 100));
+            auto listView = new ListView(nullptr, 0, 0, 260, 240);
+            class MyAdaptor: public ListAdaptor {
+                const std::vector<std::tuple<std::string, std::string, std::string>> data = {
+                    {"Support Team", "Why not a buy a new awesome theme", "5 mins"},
+                    {"Director Design Team", "Why not a buy a new awesome theme", "2 hours"},
+                    {"Developers", "Why not a buy a new awesome theme", "Today"},
+                    {"Sales Department", "Why not a buy a new awesome theme", "Yesterday"},
+                    {"Reviewers", "Why not a buy a new awesome theme", "2 days"}
+                };
+            public:
+                virtual int count() {
+                    return data.size();
+                }
+
+                virtual float hieghtForitemAt(int) {
+                    return 68;
+                }
+
+                virtual ListItem *itemAt(int position) {
+                    auto [title, subtitle, time] = data.at(position);
+                    auto listItem = new ListItem(position, 0, 0, 260, 60);
+                    listItem->add<Text>(10, 10, 140, 20)->set_text(title)->set_fontSize(18)->set_color(0x444444FF);
+                    listItem->add<Text>(10, 28, 140, 20)->set_text(subtitle)->set_fontSize(16)->set_color(0x888888FF);
+                    listItem->add<Text>(200 - 20, 45, 30, 20)->set_text(time)->set_fontSize(16)->set_color(0x333333FF);
+
+                    listItem->add<Rectangle>(0, 67, 260, 1)->set_color(0x00000011);
+                    return listItem;
+                }
+
+                virtual ~MyAdaptor() {
+
+                }
+            };
+            auto adapter = new MyAdaptor();
+            listView->setAdaptor(adapter);
+
+            auto col = new Column(nullptr, 0, 0, 260, 0);
+            col->add<Text>(10, 0, 220, 32)
+                        ->set_alignment(NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE)
+                        ->set_text("You have 4 messages")
+                        ->set_color(0x444444FF)
+                        ->set_fontSize(18);
+            col->add<Rectangle>(0, 0, 260, 1)->set_color(0x00000011);
+            col->addChild(listView);
+            col->add<Rectangle>(0, 0, 260, 30)->set_color(0xF4F4F4FF)
+               ->add<Text>(0, 0, 260, 32)
+                    ->set_alignment(NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE)
+                    ->set_text("See All Messages")
+                    ->set_color(0x444444FF)
+                    ->set_fontSize(16);
+            gScreen->popup()->show(btnMail, col);
             return true;
         });
 
@@ -106,7 +156,7 @@ static void setupUI(Screen *screen) {
                     auto progressBar = listItem->add<Rectangle>(10, 36, 180, 8)->set_color(0xCCCCCCAA)->set_radius(4);
                     progressBar->add<Rectangle>(0, 0, 180*progress, 8)->set_color(color)->set_radius(4);
 
-                    listItem->add<Rectangle>(0, 59, 200, 1)->set_color(0xCCCCCCAA);
+                    listItem->add<Rectangle>(0, 59, 200, 1)->set_color(0x00000011);
                     return listItem;
                 }
 
@@ -118,17 +168,17 @@ static void setupUI(Screen *screen) {
             listView->setAdaptor(adapter);
 
             auto col = new Column(nullptr, 0, 0, 200, 0);
-            col->add<Text>(10, 0, 180, 30)
+            col->add<Text>(10, 0, 180, 32)
                         ->set_alignment(NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE)
                         ->set_text("You have 9 tasks")
                         ->set_color(0x444444FF)
                         ->set_fontSize(18);
-            col->add<Rectangle>(0, 0, 200, 1)->set_color(0xCCCCCCAA);
+            col->add<Rectangle>(0, 0, 200, 1)->set_color(0x00000011);
             col->addChild(listView);
             col->add<Rectangle>(0, 0, 200, 30)->set_color(0xF4F4F4FF)
-               ->add<Text>(0, 0, 200, 30)
+               ->add<Text>(0, 0, 200, 32)
                     ->set_alignment(NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE)
-                    ->set_text("View all tasks")
+                    ->set_text("View All Tasks")
                     ->set_color(0x444444FF)
                     ->set_fontSize(16);
             gScreen->popup()->show(btnTasks, col);

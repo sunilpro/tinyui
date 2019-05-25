@@ -20,7 +20,7 @@ bool Flickable::mouseDragEvent(float mx, float my,  float rx, float ry,
 
 bool Flickable::scrollEvent(float mx, float my, float rx, float ry) {
     if (!mChildren.empty() && mChildPreferredHeight > hieght()) {
-        float scrollAmount = ry * 1.0f; //(hieght() / 20.0f);
+        float scrollAmount = ry * (hieght() / 20.0f);
         float scrollh = hieght() * std::min(1.0f, hieght() / mChildPreferredHeight);
         mScroll = std::max(0.0f, std::min(1.0f, mScroll - scrollAmount / (hieght() - 8 - scrollh)));
         onScrolled();
@@ -45,24 +45,24 @@ void Flickable::draw(NVGcontext *ctx) {
         child->draw(ctx);
     nvgRestore(ctx);
 
-    if (mChildPreferredHeight <= hieght())
+    if (mChildPreferredHeight <= hieght() || !mMouseFocus)
         return;
 
     float scrollh = hieght() * std::min(1.0f, hieght() / mChildPreferredHeight);
 
-    NVGpaint paint = nvgBoxGradient(
+    /*NVGpaint paint = nvgBoxGradient(
                 ctx, x() + width() - 12 + 1, y() + 4 + 1, 8,
                 hieght() - 8, 3, 4, nvgRGBA(0, 0, 0, 32), nvgRGBA(0, 0, 0, 92));
     nvgBeginPath(ctx);
     nvgRoundedRect(ctx, x() + width() - 12, y() + 4, 8,
                    hieght() - 8, 3);
     nvgFillPaint(ctx, paint);
-    nvgFill(ctx);
+    nvgFill(ctx);*/
 
-    paint = nvgBoxGradient(
+    auto paint = nvgBoxGradient(
                 ctx, x() + width() - 12 - 1,
                 y() + 4 + (hieght() - 8 - scrollh) * mScroll - 1, 8, scrollh,
-                3, 4, nvgRGBA(220, 220, 220, 100), nvgRGBA(128, 128, 128, 100));
+                3, 4, nvgRGBA(220, 220, 220, 200), nvgRGBA(128, 128, 128, 200));
 
     nvgBeginPath(ctx);
     nvgRoundedRect(ctx, x() + width() - 12 + 1,
