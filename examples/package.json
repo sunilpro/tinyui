@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4"
+    "http2": "*",
+    "express": "^4.16.4",
+    "shrink-ray-current": "*"
   }
 }
